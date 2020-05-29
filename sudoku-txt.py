@@ -47,14 +47,14 @@ def main():
 
 def makepuzzle(board):
   puzzle = []; deduced = [None] * 81
-  order = random.sample(xrange(81), 81)
+  order = random.sample(range(81), 81)
   for pos in order:
     if deduced[pos] is None:
       puzzle.append((pos, board[pos]))
       deduced[pos] = board[pos]
       deduce(deduced)
   random.shuffle(puzzle)
-  for i in xrange(len(puzzle) - 1, -1, -1):
+  for i in range(len(puzzle) - 1, -1, -1):
     e = puzzle[i]; del puzzle[i]
     rating = checkpuzzle(boardforentries(puzzle), board)
     if rating == -1: puzzle.append(e)
@@ -62,7 +62,7 @@ def makepuzzle(board):
 
 def ratepuzzle(puzzle, samples):
   total = 0
-  for i in xrange(samples):
+  for i in range(samples):
     state, answer = solveboard(puzzle)
     if answer is None: return -1
     total += len(state)
@@ -105,7 +105,7 @@ def deduce(board):
     stuck, guess, count = True, None, 0
     # fill in any spots determined by direct conflicts
     allowed, needed = figurebits(board)
-    for pos in xrange(81):
+    for pos in range(81):
       if None == board[pos]:
         numbers = listbits(allowed[pos])
         if len(numbers) == 0: return []
@@ -114,13 +114,13 @@ def deduce(board):
           guess, count = pickbetter(guess, count, [(pos, n) for n in numbers])
     if not stuck: allowed, needed = figurebits(board)
     # fill in any spots determined by elimination of other locations
-    for axis in xrange(3):
-      for x in xrange(9):
+    for axis in range(3):
+      for x in range(9):
         numbers = listbits(needed[axis * 9 + x])
         for n in numbers:
           bit = 1 << n
           spots = []
-          for y in xrange(9):
+          for y in range(9):
             pos = posfor(x, y, axis)
             if allowed[pos] & bit: spots.append(pos)
           if len(spots) == 0: return []
@@ -133,11 +133,11 @@ def deduce(board):
 
 def figurebits(board):
   allowed, needed = [e is None and 511 or 0 for e in board], []
-  for axis in xrange(3):
-    for x in xrange(9):
+  for axis in range(3):
+    for x in range(9):
       bits = axismissing(board, x, axis)
       needed.append(bits)
-      for y in xrange(9):
+      for y in range(9):
         allowed[posfor(x, y, axis)] &= bits
   return allowed, needed
 
@@ -153,17 +153,17 @@ def axisfor(pos, axis):
 
 def axismissing(board, x, axis):
   bits = 0
-  for y in xrange(9):
+  for y in range(9):
     e = board[posfor(x, y, axis)]
     if e is not None: bits |= 1 << e
   return 511 ^ bits
   
 def listbits(bits):
-  return [y for y in xrange(9) if 0 != bits & 1 << y]
+  return [y for y in range(9) if 0 != bits & 1 << y]
 
 def allowed(board, pos):
   bits = 511
-  for axis in xrange(3):
+  for axis in range(3):
     x = axisfor(pos, axis)
     bits &= axismissing(board, x, axis)
   return bits
@@ -175,7 +175,7 @@ def pickbetter(b, c, t):
   else: return (b, c + 1)
 
 def entriesforboard(board):
-  return [(pos, board[pos]) for pos in xrange(81) if board[pos] is not None]
+  return [(pos, board[pos]) for pos in range(81) if board[pos] is not None]
 
 def boardforentries(entries):
   board = [None] * 81
@@ -183,7 +183,7 @@ def boardforentries(entries):
   return board
 
 def boardmatches(b1, b2):
-  for i in xrange(81):
+  for i in range(81):
     if b1[i] != b2[i]: return False
   return True
 
@@ -210,9 +210,9 @@ def printboard(board):
        + chr(0xCD) # Top edge
        + chr(0xBB) # Top right corner
        + '\n')
-  for row in xrange(9):
+  for row in range(9):
     out += ('      ' + chr(0xBA)) # Double Bar
-    for col in xrange(9):
+    for col in range(9):
       n = board[posfor(row, col)]
       if n is None:
         out += ' '
@@ -292,8 +292,8 @@ def printboard(board):
 
 # Original output code:
 #  out = ""
-#  for row in xrange(9):
-#    for col in xrange(9):
+#  for row in range(9):
+#    for col in range(9):
 #      out += (""," "," ","  "," "," ","  "," "," ")[col]
 #      out += printcode(board[posfor(row, col)])
 #    out += ('\n','\n','\n\n','\n','\n','\n\n','\n','\n','\n')[row]
